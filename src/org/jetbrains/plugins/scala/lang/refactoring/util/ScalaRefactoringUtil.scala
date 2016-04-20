@@ -239,7 +239,7 @@ object ScalaRefactoringUtil {
       if (lit == null || !lit.isString || lit != endLit) return None
 
       val prefix = lit match {
-        case intrp: ScInterpolatedStringLiteral if rangeText.contains('$') => intrp.reference.fold("")(_.refName)
+        case intrp: ScInterpolatedStringLiteral if rangeText.contains('$') => intrp.reference.fold("")(_.refName.inName) //TODO: probably replace
         case _ => ""
       }
       val quote = if (lit.isMultiLineString) "\"\"\"" else "\""
@@ -329,18 +329,19 @@ object ScalaRefactoringUtil {
     }
     element match {
       case intrp: ScInterpolatedStringLiteral =>
-        val prefix = intrp.reference.fold("")(_.refName)
+        val prefix = intrp.reference.fold("")(_.refName.inName) //TODO: probably replace
         val fileText = intrp.getContainingFile.getText
         val text = fileText.substring(intrp.contentRange.getStartOffset, intrp.contentRange.getEndOffset)
         val refNameToResolved = mutable.HashMap[String, PsiElement]()
         intrp.depthFirst.foreach {
-          case ref: ScReferenceExpression => refNameToResolved += ((ref.refName, ref.resolve()))
+          case ref: ScReferenceExpression => refNameToResolved += ((ref.refName.inName, ref.resolve())) //TODO: probably replace
           case _ =>
         }
         val filter: ScLiteral => Boolean = {
           case toCheck: ScInterpolatedStringLiteral =>
-            toCheck.reference.fold("")(_.refName) == prefix && toCheck.depthFirst.forall {
-              case ref: ScReferenceExpression => refNameToResolved.get(ref.refName).contains(ref.resolve())
+            //TODO: probably replace
+            toCheck.reference.fold("")(_.refName.inName) == prefix && toCheck.depthFirst.forall {
+              case ref: ScReferenceExpression => refNameToResolved.get(ref.refName.inName).contains(ref.resolve())
               case _ => true
             }
           case _ => false
@@ -617,7 +618,7 @@ object ScalaRefactoringUtil {
           case Some(q) => builder.append(getShortText(q)).append(".")
           case _ =>
         }
-        builder.append(r.refName)
+        builder.append(r.refName.inName) //TODO: probably replace
       case r: ScReturnStmt =>
         builder.append("return ")
         r.expr match {
@@ -907,7 +908,7 @@ object ScalaRefactoringUtil {
         document.replaceString(textRange.getStartOffset, textRange.getEndOffset, "`" + newString + "`")
       case lit: ScLiteral =>
         val prefix = lit match {
-          case intrp: ScInterpolatedStringLiteral => intrp.reference.fold("")(_.refName)
+          case intrp: ScInterpolatedStringLiteral => intrp.reference.fold("")(_.refName.inName) //TODO: probably replace
           case _ => ""
         }
         val replaceAsInjection = Seq("s", "raw").contains(prefix)

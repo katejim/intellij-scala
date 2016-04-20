@@ -62,12 +62,14 @@ trait FileDeclarationsHolder extends PsiElement with ScDeclarationSequenceHolder
     val scope = place.getResolveScope
 
     place match {
-      case ref: ScStableCodeReferenceElement if ref.refName == "_root_" && ref.qualifier == None => {
+        //TODO: probably replace
+      case ref: ScStableCodeReferenceElement if ref.refName.inName == "_root_" && ref.qualifier == None => {
         val top = ScPackageImpl(ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (top != null && !processor.execute(top, state.put(ResolverEnv.nameKey, "_root_"))) return false
         state.put(ResolverEnv.nameKey, null)
       }
-      case ref: ScReferenceExpressionImpl if ref.refName == "_root_" && ref.qualifier == None => {
+        //TODO: probably replace
+      case ref: ScReferenceExpressionImpl if ref.refName.inName == "_root_" && ref.qualifier == None => {
         val top = ScPackageImpl(ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (top != null && !processor.execute(top, state.put(ResolverEnv.nameKey, "_root_"))) return false
         state.put(ResolverEnv.nameKey, null)

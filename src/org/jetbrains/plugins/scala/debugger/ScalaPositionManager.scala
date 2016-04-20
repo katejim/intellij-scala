@@ -824,7 +824,8 @@ object ScalaPositionManager {
 
   object InsideAsync {
     def unapply(elem: PsiElement): Option[ScMethodCall] = elem match {
-      case InsideMacro(call @ ScMethodCall(ref: ScReferenceExpression, _)) if ref.refName == "async" => Some(call)
+        //TODO: probably replace
+      case InsideMacro(call @ ScMethodCall(ref: ScReferenceExpression, _)) if ref.refName.inName == "async" => Some(call)
       case _ => None
     }
   }

@@ -146,8 +146,8 @@ object ImportInfo {
         importsUsed += importUsed
         imp.reference match {
           case Some(ref) =>
-            singleNames += ref.refName
-            addAllNames(ref, ref.refName)
+            singleNames += ref.refName.inName //TODO: probably replace
+            addAllNames(ref, ref.refName.inName) //TODO: probably replace
           case None => //something is not valid
         }
       }
@@ -165,7 +165,7 @@ object ImportInfo {
       val importUsed: ImportSelectorUsed = ImportSelectorUsed(selector)
       if (isImportUsed(importUsed)) {
         importsUsed += importUsed
-        val refName: String = selector.reference.refName
+        val refName: String = selector.reference.refName.inName //TODO: probably replace
         if (selector.isAliasedImport) {
           val importedName: String = selector.importedName
           if (importedName == "_") {
@@ -207,8 +207,8 @@ object ImportInfo {
     @tailrec
     def explicitQualifierString(ref: ScStableCodeReferenceElement, withDeepest: Boolean, res: String = ""): String = {
       ref.qualifier match {
-        case Some(q) => explicitQualifierString(q, withDeepest, ref.refName + withDot(res))
-        case None if withDeepest && ref.refName != _root_prefix => ref.refName + withDot(res)
+        case Some(q) => explicitQualifierString(q, withDeepest, ref.refName.inName + withDot(res)) //TODO: probably replace
+        case None if withDeepest && ref.refName.inName != _root_prefix => ref.refName + withDot(res) //TODO: probably replace
         case None => res
       }
     }
@@ -233,7 +233,7 @@ object ImportInfo {
     def qualifiedRef(ref: ScStableCodeReferenceElement): String = {
       if (ref.getText == _root_prefix) return _root_prefix
 
-      val refName = ref.refName
+      val refName = ref.refName.inName //TODO: probably replace
       ref.bind() match {
         case Some(ScalaResolveResult(p: PsiPackage, _)) =>
           if (p.getParentPackage != null && p.getParentPackage.getName != null) packageFqn(p)

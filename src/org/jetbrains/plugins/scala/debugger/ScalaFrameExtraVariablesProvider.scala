@@ -191,7 +191,8 @@ private class CollectingProcessor(element: PsiElement)
   val usedNames: Set[String] =
     if (containingBlock != null) {
       containingBlock.depthFirst.collect {
-        case ref: ScReferenceExpression if ref.qualifier.isEmpty => ref.refName
+        //TODO: probably replace
+        case ref: ScReferenceExpression if ref.qualifier.isEmpty => ref.refName.inName
       }.toSet
     }
     else Set.empty

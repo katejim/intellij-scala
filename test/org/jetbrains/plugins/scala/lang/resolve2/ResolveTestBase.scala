@@ -115,7 +115,7 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
   }
 
   def doEachTest(reference: ScReferenceElement, options: Parameters) {
-    val referenceName = reference.refName
+    val referenceName = reference.refName.inName //TODO: probably replace
     val result = reference.advancedResolve
     val (target, accessible, applicable) = if(result.isDefined) (
             result.get.element,

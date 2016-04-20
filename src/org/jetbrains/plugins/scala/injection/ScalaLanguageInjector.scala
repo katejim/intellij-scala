@@ -326,7 +326,7 @@ object ScalaLanguageInjector {
   
   def isSafeCall(testExpr: ScExpression) = testExpr match {
     case methodInv: MethodInvocation => safeMethodsNames contains methodInv.getEffectiveInvokedExpr.getText 
-    case ref: ScReferenceExpression => safeMethodsNames contains ref.refName
+    case ref: ScReferenceExpression => safeMethodsNames contains ref.refName.inName //TODO: probably replace
     case _ => false
   }
 }

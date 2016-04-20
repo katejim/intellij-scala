@@ -219,7 +219,7 @@ trait ResolvableStableCodeReferenceElement extends ScStableCodeReferenceElement 
         treeWalkUp(ref, null)
       case Some(p: ScInterpolationPattern) =>
         val expr =
-          ScalaPsiElementFactory.createExpressionWithContextFromText(s"""_root_.scala.StringContext("").$refName""", p, ref)
+          ScalaPsiElementFactory.createExpressionWithContextFromText(s"""_root_.scala.StringContext("").${refName.inName}""", p, ref)
         expr match {
           case ref: ResolvableReferenceExpression =>
             ref.doResolve(ref, processor, accessibilityCheck = true)

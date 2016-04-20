@@ -12,7 +12,8 @@ object IsInstanceOfCall {
       case ScParenthesisedExpr(IsInstanceOfCall(call)) => Some(call)
       case call: ScGenericCall =>
         call.referencedExpr match {
-          case ref: ScReferenceExpression if ref.refName == "isInstanceOf" =>
+            //TODO: probably replace
+          case ref: ScReferenceExpression if ref.refName.inName == "isInstanceOf" =>
             ref.resolve() match {
               case synth: ScSyntheticFunction => Some(call)
               case _ => None

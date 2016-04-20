@@ -188,7 +188,7 @@ object TypeAdjuster extends ApplicationAdapter {
           val position = findRef(rInfo.origTypeElem).getOrElse(info.origTypeElem  )
           val importAlias = ScalaPsiUtil.importAliasFor(resolved, position)
           resolved match {
-            case _ if importAlias.isDefined => Some(rInfo.withNewText(importAlias.get.refName))
+            case _ if importAlias.isDefined => Some(rInfo.withNewText(importAlias.get.refName.inName)) //TODO: probably replace
             case named: PsiNamedElement if ScalaPsiUtil.hasStablePath(named) =>
               named match {
                 case clazz: PsiClass =>

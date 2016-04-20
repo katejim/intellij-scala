@@ -40,7 +40,8 @@ class JavaAccessorMethodCalledAsEmptyParenInspection extends AbstractMethodSigna
 
   private def isOverloadedMethod(ref: ScReferenceExpression)
                                 (implicit typeSystem: TypeSystem) = {
-    val processor = new CollectMethodsProcessor(ref, ref.refName)
+    //TODO: probably replace
+    val processor = new CollectMethodsProcessor(ref, ref.refName.inName)
     ref.bind().flatMap(_.fromType).forall(processor.processType(_, ref))
     processor.candidatesS.size > 1
   }

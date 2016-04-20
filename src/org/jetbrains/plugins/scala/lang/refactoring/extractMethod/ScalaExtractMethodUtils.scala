@@ -155,7 +155,7 @@ object ScalaExtractMethodUtils {
                       sect.getParent.getNode.replaceChild(sect.getNode, newRef.getNode)
                     case _ if param.isEmptyParamFunction =>
                       ref.getParent match {
-                        case ref: ScReferenceElement if ref.refName == "apply" => tail()
+                        case ref: ScReferenceElement if ref.refName.inName == "apply" => tail() //TODO: probably replace
                         case call: ScMethodCall => tail()
                         case _ =>
                           ref.asInstanceOf[ScExpression].expectedType() match {

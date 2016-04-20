@@ -323,7 +323,8 @@ object ScalaImportTypeFix {
     if (ref.isInstanceOf[ScTypeProjection]) return Array.empty
     val kinds = ref.getKinds(incomplete = false)
     val cache = ScalaPsiManager.instance(myProject)
-    val classes = cache.getClassesByName(ref.refName, ref.getResolveScope)
+    // TODO: probably replace name 
+    val classes = cache.getClassesByName(ref.refName.inName, ref.getResolveScope)
     val buffer = new ArrayBuffer[TypeToImport]
     for (clazz <- classes) {
       def addClazz(clazz: PsiClass) {
@@ -346,7 +347,8 @@ object ScalaImportTypeFix {
       }
     }
 
-    val typeAliases = cache.getStableAliasesByName(ref.refName, ref.getResolveScope)
+    // TODO: probably replace
+    val typeAliases = cache.getStableAliasesByName(ref.refName.inName, ref.getResolveScope)
     for (alias <- typeAliases) {
       val containingClass = alias.containingClass
       if (containingClass != null && ScalaPsiUtil.hasStablePath(alias) &&
@@ -360,7 +362,7 @@ object ScalaImportTypeFix {
       case exclude if exclude.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) => false
       case include =>
         val parts = include.split('.')
-        if (parts.length > 1) parts.takeRight(2).head == ref.refName
+        if (parts.length > 1) parts.takeRight(2).head == ref.refName.inName //TODO: probably replace
         else false
     }.map { case s => s.reverse.dropWhile(_ != '.').tail.reverse }
 

@@ -330,7 +330,8 @@ trait ScExpression extends ScBlockStatement with PsiAnnotationMemberValue with I
 
   def getType(ctx: TypingContext = TypingContext.empty): TypeResult[ScType] = {
     this match {
-      case ref: ScReferenceExpression if ref.refName == ScImplicitlyConvertible.IMPLICIT_EXPRESSION_NAME =>
+        //TODO: probably replace
+      case ref: ScReferenceExpression if ref.refName.inName == ScImplicitlyConvertible.IMPLICIT_EXPRESSION_NAME =>
         val data = getUserData(ScImplicitlyConvertible.FAKE_EXPRESSION_TYPE_KEY)
         if (data != null) return Success(data, Some(this))
       case _ =>

@@ -213,7 +213,7 @@ class ScConstructorImpl(node: ASTNode) extends ScalaPsiElementImpl(node) with Sc
     } yield {
       arg match {
         case ScAssignStmt(refToParam: ScReferenceExpression, Some(expr)) =>
-          val param = paramClause.find(_.getName == refToParam.refName)
+          val param = paramClause.find(_.getName == refToParam.refName.inName) //TODO: probably replace
             .orElse(refToParam.resolve().asOptionOf[ScParameter])
           param.map(p => (expr, new Parameter(p))).toSeq
         case expr =>

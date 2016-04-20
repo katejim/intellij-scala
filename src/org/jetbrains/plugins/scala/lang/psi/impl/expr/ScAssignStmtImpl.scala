@@ -56,7 +56,8 @@ class ScAssignStmtImpl(node: ASTNode) extends ScalaPsiElementImpl(node) with ScA
   def mirrorMethodCall: Option[ScMethodCall] = {
     getLExpression match {
       case ref: ScReferenceExpression =>
-        val text = s"${ref.refName}_=(${getRExpression.map(_.getText).getOrElse("")})"
+        //TODO: probably replace
+        val text = s"${ref.refName.inName}_=(${getRExpression.map(_.getText).getOrElse("")})"
         val mirrorExpr = ScalaPsiElementFactory.createExpressionWithContextFromText(text, getContext, this)
         mirrorExpr match {
           case call: ScMethodCall =>

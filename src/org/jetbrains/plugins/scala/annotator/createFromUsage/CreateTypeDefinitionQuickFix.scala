@@ -32,7 +32,7 @@ import org.jetbrains.plugins.scala.project.ProjectExt
 abstract class CreateTypeDefinitionQuickFix(ref: ScReferenceElement, description: String, kind: ClassKind)
         extends CreateFromUsageQuickFixBase(ref, description) {
   private final val LOG: Logger = Logger.getInstance("#org.jetbrains.plugins.scala.annotator.createFromUsage.CreateTemplateDefinitionQuickFix")
-  private val name = ref.refName
+  private val name = ref.refName.inName
 
 
   override def isAvailable(project: Project, editor: Editor, file: PsiFile) = {
@@ -145,7 +145,7 @@ abstract class CreateTypeDefinitionQuickFix(ref: ScReferenceElement, description
   }
   
   private def createClassInDirectory(directory: PsiDirectory) = {
-    val clazz = ScalaDirectoryService.createClassFromTemplate(directory, name, kind.templateName, askToDefineVariables = false)
+    val clazz = ScalaDirectoryService.createClassFromTemplate(directory, name.inName, kind.templateName, askToDefineVariables = false)
     afterCreationWork(clazz.asInstanceOf[ScTypeDefinition])
   }
 

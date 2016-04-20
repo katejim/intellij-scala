@@ -120,9 +120,11 @@ class ScalaTestConfigurationProducer extends {
                          recursive: Boolean, checkFirstArgIsUnitOrString: Boolean): ReturnResult = {
       if (call == null) return NotFoundResult
       call.getInvokedExpr match {
-        case ref: ScReferenceExpression if namesSet.isDefinedAt(ref.refName) =>
-          var middleName = ref.refName
-          val fqns = namesSet(ref.refName)
+          //TODO: probably replace
+        case ref: ScReferenceExpression if namesSet.isDefinedAt(ref.refName.inName) =>
+          var middleName = ref.refName.inName //TODO: probably replace
+          //TODO: probably replace
+          val fqns = namesSet(ref.refName.inName)
           val resolve = ref.resolve()
           if (resolve != null) {
             val containingClass = resolve match {
@@ -225,7 +227,7 @@ class ScalaTestConfigurationProducer extends {
       val inv: (MethodInvocation) => Option[String] = m => {
         def checkTagged(m: MethodInvocation): Option[String] = {
           m.getInvokedExpr match {
-            case ref: ScReferenceExpression if ref.refName == "taggedAs" =>
+            case ref: ScReferenceExpression if ref.refName.inName == "taggedAs" => //TODO: probably replace
               val resolve = ref.resolve()
               resolve match {
                 case fun: ScFunction =>
@@ -442,7 +444,7 @@ class ScalaTestConfigurationProducer extends {
 
       val visitor = new ScalaRecursiveElementVisitor {
         override def visitReferenceExpression(ref: ScReferenceExpression) {
-          ref.refName match {
+          ref.refName.inName match { //TODO: probably replace
             case "should" =>
               ref.resolve() match {
                 case fun: ScFunction if fun.containingClass != null &&
@@ -510,7 +512,8 @@ class ScalaTestConfigurationProducer extends {
       val inv: (MethodInvocation) => Option[String] = {
         case i: ScInfixExpr =>
           i.getBaseExpr match {
-            case ref: ScReferenceExpression if ref.refName == "it" || ref.refName == "ignore" || ref.refName == "they" =>
+              //TODO: probably replace
+            case ref: ScReferenceExpression if ref.refName.inName == "it" || ref.refName.inName == "ignore" || ref.refName.inName == "they" =>
               endupWithIt(ref)
             case _ =>
               endupWithLitral(i.getBaseExpr)
@@ -519,7 +522,8 @@ class ScalaTestConfigurationProducer extends {
           call.getInvokedExpr match {
             case ref: ScReferenceExpression =>
               ref.qualifier match {
-                case Some(ref: ScReferenceExpression) if ref.refName == "it" || ref.refName == "ignore" || ref.refName == "they" =>
+                  //TODO: probably replace
+                case Some(ref: ScReferenceExpression) if ref.refName.inName == "it" || ref.refName.inName == "ignore" || ref.refName.inName == "they" =>
                   endupWithIt(ref)
                 case Some(qual) => endupWithLitral(qual)
                 case _ => None

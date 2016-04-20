@@ -37,7 +37,8 @@ class FunctionTupleSyntacticSugarInspection extends LocalInspectionTool {
               case s: ScSimpleTypeElement =>
                 s.reference match {
                   case Some(ref) =>
-                    if (ref.refName.startsWith("Tuple") || ref.refName.startsWith("Function") && ref.isValid) {
+                    //TODO: probably replace
+                    if (ref.refName.inName.startsWith("Tuple") || ref.refName.inName.startsWith("Function") && ref.isValid) {
                       val referredElement = ref.bind().map(_.getElement)
                       referredElement match {
                         case Some(QualifiedName(FunctionN(n))) if te.typeArgList.typeArgs.length == (n.toInt + 1) =>

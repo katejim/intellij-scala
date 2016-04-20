@@ -175,7 +175,8 @@ class ScLiteralImpl(node: ASTNode) extends ScalaPsiElementImpl(node) with ScLite
     if (isString) {
       val quote = if (isMultiLineString) "\"\"\"" else "\""
       val prefix = this match {
-        case intrp: ScInterpolatedStringLiteral => intrp.reference.fold("")(_.refName)
+          //TODO: probably replace
+        case intrp: ScInterpolatedStringLiteral => intrp.reference.fold("")(_.refName.inName)
         case _ => ""
       }
       new TextRange(range.getStartOffset + prefix.length + quote.length, range.getEndOffset - quote.length)

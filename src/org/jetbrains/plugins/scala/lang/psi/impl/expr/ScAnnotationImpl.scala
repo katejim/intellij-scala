@@ -58,7 +58,8 @@ class ScAnnotationImpl private (stub: StubElement[ScAnnotation], nodeType: IElem
     constructor.args match {
       case Some(args) => args.exprs.map(expr => expr match {
         case ass: ScAssignStmt => ass.getLExpression match {
-          case ref: ScReferenceExpression if ref.refName == attributeName => ass.getRExpression match {
+            //TODO: probably replace
+          case ref: ScReferenceExpression if ref.refName.inName == attributeName => ass.getRExpression match {
             case Some(expr) => (true, expr)
             case _ => (false, expr)
           }

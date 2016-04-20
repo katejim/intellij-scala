@@ -35,9 +35,9 @@ object WithStrippedMargin {
   def unapply(literal: ScLiteral): Option[(ScExpression, Char)] = {
     literal.getParent match {
       case MethodRepr(refExpr: ScReferenceExpression, Some(lit: ScLiteral), Some(ref), Nil)
-        if lit.isMultiLineString && ref.refName == STRIP_MARGIN => Some(refExpr, '|')
+        if lit.isMultiLineString && ref.refName.inName == STRIP_MARGIN => Some(refExpr, '|') //TODO: probably replace
       case _ childOf (MethodRepr(mc: ScMethodCall, Some(lit: ScLiteral), Some(ref), List(argLit: ScLiteral)))
-        if lit.isMultiLineString && ref.refName == STRIP_MARGIN &&
+        if lit.isMultiLineString && ref.refName.inName == STRIP_MARGIN && //TODO: probably replace
                 argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR => Some(mc, argLit.getValue.asInstanceOf[Char])
       case _ => None
     }
@@ -50,7 +50,7 @@ object IsStripMargin {
 
   def unapply(expr: ScExpression): Option[(ScLiteral, Char)] = {
     expr match {
-      case MethodRepr(_, Some(lit: ScLiteral), Some(ref), args) if lit.isMultiLineString && ref.refName == STRIP_MARGIN =>
+      case MethodRepr(_, Some(lit: ScLiteral), Some(ref), args) if lit.isMultiLineString && ref.refName.inName == STRIP_MARGIN => //TODO: probably replace
         val marginChar = args match {
           case Nil => '|'
           case Seq(argLit: ScLiteral) if argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR => argLit.getValue.asInstanceOf[Char]

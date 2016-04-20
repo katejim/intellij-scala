@@ -64,7 +64,8 @@ object TestConfigurationUtil {
     val twoArgMethods = Seq("replace", "substring")
 
     def processNoArgMethods(refExpr: ScReferenceExpression) =
-      if (refExpr.refName == "toString") {
+      //TODO: probably replace
+      if (refExpr.refName.inName == "toString") {
         //special handling for now, since only toString is allowed on integers
         refExpr.smartQualifier.flatMap(getStaticTestNameElement(_, allowSymbolLiterals) match {
           case Some(string: String) => Some(string)
@@ -73,7 +74,8 @@ object TestConfigurationUtil {
         })
       } else refExpr.smartQualifier.
               flatMap(getStaticTestNameRaw(_, allowSymbolLiterals)).flatMap { expr =>
-        refExpr.refName match {
+        //TODO: probably replace
+        refExpr.refName.inName match {
           case "toLowerCase" => Some(expr.toLowerCase)
           case "trim" => Some(expr.trim)
           case "toString" => Some(expr)
@@ -91,18 +93,21 @@ object TestConfigurationUtil {
       case p: ScParenthesisedExpr => p.expr.flatMap(getStaticTestNameRaw(_, allowSymbolLiterals))
       case infixExpr: ScInfixExpr =>
         infixExpr.getInvokedExpr match {
-          case refExpr: ScReferenceExpression if refExpr.refName == "+" =>
+          case refExpr: ScReferenceExpression if refExpr.refName.inName == "+" => //TODO: probably replace
             getStaticTestNameElement(infixExpr.lOp, allowSymbolLiterals).flatMap(left => getStaticTestNameElement(infixExpr.rOp, allowSymbolLiterals).map(left + _.toString))
           case _ => None
         }
       case methodCall: ScMethodCall =>
         methodCall.getInvokedExpr match {
-          case refExpr: ScReferenceExpression if noArgMethods.contains(refExpr.refName) &&
+            //TODO: probably replace
+          case refExpr: ScReferenceExpression if noArgMethods.contains(refExpr.refName.inName) &&
             methodCall.argumentExpressions.isEmpty =>
             processNoArgMethods(refExpr)
-          case refExpr: ScReferenceExpression if oneArgMethods.contains(refExpr.refName) &&
+            //TODO: probably replace
+          case refExpr: ScReferenceExpression if oneArgMethods.contains(refExpr.refName.inName) &&
             methodCall.argumentExpressions.size == 1 =>
-            def helper(anyExpr: Any, arg: Any): Option[Any] = (anyExpr, refExpr.refName, arg) match {
+            //TODO: probably replace
+            def helper(anyExpr: Any, arg: Any): Option[Any] = (anyExpr, refExpr.refName.inName, arg) match {
               case (expr: String, "stripSuffix", string: String) => Some(expr.stripSuffix(string))
               case (expr: String, "stripPrefix", string: String) => Some(expr.stripPrefix(string))
               case (expr: String, "substring", integer: Int) => Some(expr.substring(integer))
@@ -112,9 +117,11 @@ object TestConfigurationUtil {
               flatMap(arg =>
               refExpr.smartQualifier.flatMap(getStaticTestNameElement(_, allowSymbolLiterals)).flatMap(helper(_, arg))
               )
-          case refExpr: ScReferenceExpression if twoArgMethods.contains(refExpr.refName) &&
+            //TODO: probably replace
+          case refExpr: ScReferenceExpression if twoArgMethods.contains(refExpr.refName.inName) &&
             methodCall.argumentExpressions.size == 2 =>
-            def helper(anyExpr: Any, arg1: Any, arg2: Any): Option[Any] = (anyExpr, refExpr.refName, arg1, arg2) match {
+            //TODO: probably replace
+            def helper(anyExpr: Any, arg1: Any, arg2: Any): Option[Any] = (anyExpr, refExpr.refName.inName, arg1, arg2) match {
               case (expr: String, "replace", s1: String, s2: String) => Some(expr.replace(s1, s2))
               case (expr: String, "substring", begin: Int, end: Int) => Some(expr.substring(begin, end))
               case _ => None
@@ -130,7 +137,8 @@ object TestConfigurationUtil {
         }
       case refExpr: ScReferenceExpression if refExpr.getText == "+" =>
         getStaticTestNameRaw(refExpr.getParent, allowSymbolLiterals)
-      case refExpr: ScReferenceExpression if noArgMethods.contains(refExpr.refName) =>
+        //TODO: probably replace
+      case refExpr: ScReferenceExpression if noArgMethods.contains(refExpr.refName.inName) =>
         processNoArgMethods(refExpr)
       case refExpr: ScReferenceExpression =>
         refExpr.advancedResolve.map(_.getActualElement) match {

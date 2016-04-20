@@ -47,7 +47,8 @@ object DoubleNegationUtil {
       }
     else
       expr match {
-        case ScInfixExpr(left, operation, right) => operation.refName == "==" && hasNegation(left) && hasNegation(right)
+          //TODO: probably replace
+        case ScInfixExpr(left, operation, right) => operation.refName.inName == "==" && hasNegation(left) && hasNegation(right)
         case _ => false
       }
   }
@@ -77,8 +78,10 @@ object DoubleNegationUtil {
   private def hasNegation(expr: ScExpression): Boolean = {
     val withoutParentheses = stripParentheses(expr)
     withoutParentheses match {
-      case ScPrefixExpr(operation, _) => operation.refName == "!"
-      case ScInfixExpr(_, operation, _) => operation.refName == "!="
+        //TODO: probably replace
+      case ScPrefixExpr(operation, _) => operation.refName.inName == "!"
+        //TODO: probably replace
+      case ScInfixExpr(_, operation, _) => operation.refName.inName == "!="
       case _ => false
     }
   }

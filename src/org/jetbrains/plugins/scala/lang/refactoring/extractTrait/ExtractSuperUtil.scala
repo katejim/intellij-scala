@@ -99,7 +99,8 @@ object ExtractSuperUtil {
         oldExtBlock.templateParents.get
     }
     templParents.typeElementsWithoutConstructor.foreach {
-      case s: ScSimpleTypeElement if s.reference.exists(_.refName == name) => s.reference.foreach(_.bindToElement(typeToExtend))
+      //TODO: probably replace
+      case s: ScSimpleTypeElement if s.reference.exists(_.refName.inName == name) => s.reference.foreach(_.bindToElement(typeToExtend))
       case _ =>
     }
   }

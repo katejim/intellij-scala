@@ -19,7 +19,8 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
 
   override def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case MethodRepr(call, _, Some(ref), Seq(arg @ lambdaWithBody(body)))
-      if ref.refName == "map" && checkResolve(ref, getLikeCollectionClasses) =>
+      //TODO: probably replace
+      if ref.refName.inName == "map" && checkResolve(ref, getLikeCollectionClasses) =>
 
       val isInBlock = call.getParent match {
         case _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions | _: ScalaFile => true

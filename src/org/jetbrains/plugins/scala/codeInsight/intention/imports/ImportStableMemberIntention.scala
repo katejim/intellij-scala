@@ -21,7 +21,7 @@ class ImportStableMemberIntention extends PsiElementBaseIntentionAction {
   override def isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean = {
     val refAtCaret = PsiTreeUtil.getParentOfType(element, classOf[ScReferenceElement])
     if (refAtCaret == null) return false
-    setText(s"Import ${refAtCaret.refName}")
+    setText(s"Import ${refAtCaret.refName.inName}") //TODO: probably replace
     checkReference(refAtCaret)
   }
 

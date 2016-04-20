@@ -60,7 +60,7 @@ object SideEffectsUtil {
     case ScSugarCallExpr(baseExpr, operation, args) =>
       val checkOperation = operation match {
         case ref if hasImplicitConversion(ref) => false
-        case ref if ref.refName.endsWith("_=") => false
+        case ref if ref.refName.inName.endsWith("_=") => false //TODO: probably replace
         case ResolvesTo(_: ScSyntheticFunction) => true
         case ResolvesTo(m: PsiMethod) => methodHasNoSideEffects(m, baseExpr.getType().toOption)
         case _ => false

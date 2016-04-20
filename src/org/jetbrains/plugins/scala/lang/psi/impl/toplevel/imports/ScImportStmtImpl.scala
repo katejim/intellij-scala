@@ -68,8 +68,10 @@ class ScImportStmtImpl private (stub: StubElement[ScImportStmt], nodeType: IElem
         if (name != "" && !importExpr.singleWildcard) {
           val decodedName = ScalaPsiUtil.convertMemberName(name)
           importExpr.selectorSet match {
-            case Some(set) => set.selectors.exists(selector => ScalaPsiUtil.convertMemberName(selector.reference.refName) == decodedName)
-            case None => if (ScalaPsiUtil.convertMemberName(ref.refName) != decodedName) return true
+              //TODO: probably replace
+            case Some(set) => set.selectors.exists(selector => ScalaPsiUtil.convertMemberName(selector.reference.refName.inName) == decodedName)
+              //TODO: probably replace
+            case None => if (ScalaPsiUtil.convertMemberName(ref.refName.inName) != decodedName) return true
           }
         }
         val checkWildcardImports = processor match {
@@ -216,7 +218,7 @@ class ScImportStmtImpl private (stub: StubElement[ScImportStmt], nodeType: IElem
                 ProgressManager.checkCanceled()
                   val selectorResolve: Array[ResolveResult] = selector.reference.multiResolve(false)
                   selectorResolve foreach { result =>
-                    if (selector.isAliasedImport && selector.importedName != selector.reference.refName) {
+                    if (selector.isAliasedImport && selector.importedName != selector.reference.refName.inName) { //TODO: probably replace
                       //Resolve the name imported by selector
                       //Collect shadowed elements
                       shadowed += ((selector, result.getElement))
@@ -301,7 +303,7 @@ class ScImportStmtImpl private (stub: StubElement[ScImportStmt], nodeType: IElem
                   val selectorResolve: Array[ResolveResult] = selector.reference.multiResolve(false)
                   selectorResolve foreach { result =>
                     var newState: ResolveState = state
-                    if (!selector.isAliasedImport || selector.importedName == selector.reference.refName) {
+                    if (!selector.isAliasedImport || selector.importedName == selector.reference.refName.inName) { //TODO: probably replace
                       val rSubst = result match {
                         case result: ScalaResolveResult => result.substitutor
                         case _ => ScSubstitutor.empty

@@ -75,7 +75,7 @@ class ScReferenceExpressionImpl(node: ASTNode) extends ScalaPsiElementImpl(node)
       case c: PsiClass =>
         if (!ResolveUtils.kindMatches(element, getKinds(incomplete = false)))
           throw new IncorrectOperationException("class does not match expected kind")
-        if (refName != c.name)
+        if (refName.inName != c.name) //TODO: probably replace
           throw new IncorrectOperationException("class does not match expected name")
         val qualName = c.qualifiedName
         if (qualName != null) {
@@ -83,7 +83,8 @@ class ScReferenceExpressionImpl(node: ASTNode) extends ScalaPsiElementImpl(node)
             ScalaImportTypeFix.getImportHolder(ref = this, project = getProject).addImportForClass(c, ref = this)
             //need to use unqualified reference with new import
             if (!this.isQualified) this
-            else this.replace(ScalaPsiElementFactory.createExpressionFromText(this.refName, getManager).asInstanceOf[ScReferenceExpression])
+              //TODO: probably replace
+            else this.replace(ScalaPsiElementFactory.createExpressionFromText(this.refName.inName, getManager).asInstanceOf[ScReferenceExpression])
             //todo: conflicts with other classes with same name?
           }
         }
@@ -99,7 +100,7 @@ class ScReferenceExpressionImpl(node: ASTNode) extends ScalaPsiElementImpl(node)
           this
         }
       case elem: PsiNamedElement =>
-        if (refName != elem.name)
+        if (refName.inName != elem.name) //TODO: probably replace
           throw new IncorrectOperationException("named element does not match expected name")
         ScalaPsiUtil.nameContext(elem) match {
           case memb: PsiMember =>
@@ -145,7 +146,8 @@ class ScReferenceExpressionImpl(node: ASTNode) extends ScalaPsiElementImpl(node)
     })
   }
 
-  def getSameNameVariants: Array[ResolveResult] = doResolve(this, new CompletionProcessor(getKinds(incomplete = true), this, true, Some(refName)))
+  //TODO: probably replace
+  def getSameNameVariants: Array[ResolveResult] = doResolve(this, new CompletionProcessor(getKinds(incomplete = true), this, true, Some(refName.inName)))
 
   def getKinds(incomplete: Boolean, completion: Boolean = false) = {
     getContext match {
@@ -211,7 +213,8 @@ class ScReferenceExpressionImpl(node: ASTNode) extends ScalaPsiElementImpl(node)
                                 override def visitSimpleTypeElement(simple: ScSimpleTypeElement): Unit = {
                                   if (simple.singleton) {
                                     simple.reference match {
-                                      case Some(ref) if ref.refName == p.name && ref.resolve() == p => found = true
+                                        //TODO: probably replace
+                                      case Some(ref) if ref.refName.inName == p.name && ref.resolve() == p => found = true
                                       case _ =>
                                     }
                                   }

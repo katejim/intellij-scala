@@ -74,7 +74,7 @@ class ScalaGenerateAnonymousFunctionInsertHandler(params: Seq[ScType], braceArgs
         override def visitSimpleTypeElement(simple: ScSimpleTypeElement) {
           simple.reference match {
             case Some(ref) =>
-              val refName = ref.refName
+              val refName = ref.refName.inName //TODO: probably replace
               if (abstractNames.contains(refName)) {
                 val postfixLength = ScTypePresentation.ABSTRACT_TYPE_POSTFIX.length
                 val node = abstracts.find(a => a.parameterType.name + ScTypePresentation.ABSTRACT_TYPE_POSTFIX == refName) match {

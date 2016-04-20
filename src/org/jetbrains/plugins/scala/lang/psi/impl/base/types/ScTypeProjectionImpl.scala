@@ -61,7 +61,8 @@ class ScTypeProjectionImpl(node: ASTNode) extends ScalaPsiElementImpl (node) wit
 
   object MyResolver extends ResolveCache.PolyVariantResolver[ScTypeProjectionImpl] {
     def resolve(projection: ScTypeProjectionImpl, incomplete: Boolean) = {
-      projection.doResolve(new ResolveProcessor(projection.getKinds(incomplete), projection, projection.refName))
+      //TODO: probably replace
+      projection.doResolve(new ResolveProcessor(projection.getKinds(incomplete), projection, projection.refName.inName))
     }
   }
 
@@ -80,7 +81,8 @@ class ScTypeProjectionImpl(node: ASTNode) extends ScalaPsiElementImpl (node) wit
     res
   }
 
-  def getSameNameVariants: Array[ResolveResult] = doResolve(new CompletionProcessor(getKinds(incomplete = true), this, false, Some(refName)))
+  //TODO: probably replace
+  def getSameNameVariants: Array[ResolveResult] = doResolve(new CompletionProcessor(getKinds(incomplete = true), this, false, Some(refName.inName)))
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitTypeProjection(this)

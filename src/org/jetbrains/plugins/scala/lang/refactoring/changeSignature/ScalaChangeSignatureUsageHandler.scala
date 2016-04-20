@@ -219,7 +219,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           t.replaceExpression(newTuple, removeParenthesis = false)
         case _ =>
           val qualText = infix.getBaseExpr.getText
-          val newCallText = s"$qualText.${infix.operation.refName}${argsText(change, usage)}"
+          val newCallText = s"$qualText.${infix.operation.refName.inName}${argsText(change, usage)}" //TODO: probably replace
           val methodCall = ScalaPsiElementFactory.createExpressionWithContextFromText(newCallText, infix.getContext, infix)
           infix.replaceExpression(methodCall, removeParenthesis = true)
       }

@@ -96,7 +96,8 @@ trait ScPattern extends ScalaPsiElement {
       case Some(ScalaResolveResult(_: ScBindingPattern | _: ScParameter, _)) =>
         val resolve = ref match {
           case refImpl: ScStableCodeReferenceElementImpl =>
-            refImpl.doResolve(refImpl, new ExpandedExtractorResolveProcessor(ref, ref.refName, ref.getKinds(incomplete = false), ref.getContext match {
+            //TODO: probably replace
+            refImpl.doResolve(refImpl, new ExpandedExtractorResolveProcessor(ref, ref.refName.inName, ref.getKinds(incomplete = false), ref.getContext match {
               case inf: ScInfixPattern => inf.expectedType
               case constr: ScConstructorPattern => constr.expectedType
               case _ => None

@@ -37,7 +37,7 @@ object SortFilter extends SimplificationType {
           case x @ (_: ScBlock | _: ScParenthesisedExpr | _: ScTuple) => x.getText
           case _ => s"(${arg.getText})"
         }
-        Some(s".${op.refName}${argListFromInfix(right)}")
+        Some(s".${op.refName.inName}${argListFromInfix(right)}") //TODO: probably replace
       case _ => None
     }
 

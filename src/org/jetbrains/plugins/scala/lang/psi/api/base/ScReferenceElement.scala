@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef._
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 import org.jetbrains.plugins.scala.lang.psi.light.isWrapper
 import org.jetbrains.plugins.scala.lang.psi.light.scala.isLightScNamedElement
+import org.jetbrains.plugins.scala.lang.psi.util.InternalName
 import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 import org.jetbrains.plugins.scala.util.ScEquivalenceUtil
 
@@ -37,9 +38,9 @@ trait ScReferenceElement extends ScalaPsiElement with ResolvableReferenceElement
 
   def nameId: PsiElement
 
-  def refName: String = {
+  def refName: InternalName = {
     assert(nameId != null, s"nameId is null for reference with text $getText; parent: ${getParent.getText}")
-    nameId.getText
+    InternalName(nameId.getText)
   }
 
   private def isBackQuoted = {
@@ -56,7 +57,7 @@ trait ScReferenceElement extends ScalaPsiElement with ResolvableReferenceElement
   def getRangeInElement: TextRange = {
     val start = nameId.getTextRange.getStartOffset - getTextRange.getStartOffset
     val len = getTextLength
-    if (isBackQuoted && patternNeedBackticks(refName.drop(1).dropRight(1)))
+    if (isBackQuoted && patternNeedBackticks(refName.inName.drop(1).dropRight(1)))
       new TextRange(start + 1, len - 1)
     else
       new TextRange(start, len)
@@ -68,7 +69,7 @@ trait ScReferenceElement extends ScalaPsiElement with ResolvableReferenceElement
       case c: ScTypeDefinition => if (c.containingClass == null) c.qualifiedName else c.name
       case c: PsiClass => c.qualifiedName
       case n: PsiNamedElement => n.name
-      case _ => refName
+      case _ => refName.inName
     }
   }
 
@@ -231,7 +232,7 @@ trait ScReferenceElement extends ScalaPsiElement with ResolvableReferenceElement
       getContainingFile.accept(new ScalaRecursiveElementVisitor {
         override def visitReference(ref: ScReferenceElement) {
           if (reject) return
-          if (usedNames.contains(ref.refName)) {
+          if (usedNames.contains(ref.refName.inName)) {
             ref.bind() match {
               case Some(r: ScalaResolveResult) if ref != ScReferenceElement.this && r.importsUsed.isEmpty =>
                 reject = true
@@ -275,7 +276,8 @@ trait ScReferenceElement extends ScalaPsiElement with ResolvableReferenceElement
                       case Some(_) =>
                       case None =>
                         if (!ref.getParent.isInstanceOf[ScImportSelector]) {
-                          if (ref.refName == parts(index)) res = false
+                          //TODO: probably replace
+                          if (ref.refName.inName == parts(index)) res = false
                         }
                     }
                   }

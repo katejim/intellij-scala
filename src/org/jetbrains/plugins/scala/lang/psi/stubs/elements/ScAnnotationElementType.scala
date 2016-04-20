@@ -32,16 +32,16 @@ class ScAnnotationElementType[Func <: ScAnnotation]
   }
 
   def createStubImpl[ParentPsi <: PsiElement](psi: ScAnnotation, parentStub: StubElement[ParentPsi]): ScAnnotationStub = {
-    val name = psi.typeElement match {
+    val name:String = psi.typeElement match {
       case p: ScParenthesisedTypeElement => p.typeElement match {
         case Some(s: ScSimpleTypeElement) => s.reference match {
-          case Some(ref: ScStableCodeReferenceElement) => ref.refName
+          case Some(ref: ScStableCodeReferenceElement) => ref.refName.inName //TODO: probably replace
           case _ => ""
         }
         case _ => ""
       }
       case s: ScSimpleTypeElement => s.reference match {
-        case Some(ref) => ref.refName
+        case Some(ref) => ref.refName.inName //TODO: probably replace
         case _ => ""
       }
       case _ => ""

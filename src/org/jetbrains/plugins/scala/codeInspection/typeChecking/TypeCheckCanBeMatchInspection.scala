@@ -257,7 +257,8 @@ object TypeCheckToMatchUtil {
     if (onlyFirst) {
       condition match {
         case IsInstanceOfCall(call) => List(call)
-        case infixExpr: ScInfixExpr if infixExpr.operation.refName == "&&" => findIsInstanceOfCalls(infixExpr.lOp, onlyFirst)
+          //TODO: probably replace
+        case infixExpr: ScInfixExpr if infixExpr.operation.refName.inName == "&&" => findIsInstanceOfCalls(infixExpr.lOp, onlyFirst)
         case parenth: ScParenthesisedExpr => findIsInstanceOfCalls(parenth.expr.orNull, onlyFirst)
         case _ => Nil
       }
@@ -271,7 +272,8 @@ object TypeCheckToMatchUtil {
                        (implicit typeSystem: TypeSystem): Seq[ScGenericCall] = {
     def isAsInstOfCall(genCall: ScGenericCall) = {
       genCall.referencedExpr match {
-        case ref: ScReferenceExpression if ref.refName == "asInstanceOf" =>
+          //TODO: probably replace
+        case ref: ScReferenceExpression if ref.refName.inName == "asInstanceOf" =>
           ref.resolve() match {
             case synth: SyntheticNamedElement => true
             case _ => false
@@ -340,7 +342,8 @@ object TypeCheckToMatchUtil {
       val referenceVisitor = new ScalaRecursiveElementVisitor() {
         override def visitReferenceExpression(ref: ScReferenceExpression) {
           for (prim <- primary) {
-            if (ref.refName == name && ref.resolve() == prim)
+            //TODO: probably replace
+            if (ref.refName.inName == name && ref.resolve() == prim)
               dependents += ref
           }
           super.visitReferenceExpression(ref)
@@ -391,12 +394,14 @@ object TypeCheckToMatchUtil {
   def separateConditions(expr: ScExpression): List[ScExpression] = {
     expr match {
       case parenth: ScParenthesisedExpr => parenth.expr match {
-        case Some(infixExpr: ScInfixExpr) if infixExpr.operation.refName == "&&" =>
+          //TODO: probably replace
+        case Some(infixExpr: ScInfixExpr) if infixExpr.operation.refName.inName == "&&" =>
           separateConditions(infixExpr.lOp) ::: separateConditions(infixExpr.rOp) ::: Nil
         case genCall: ScGenericCall => genCall :: Nil
         case _ => parenth :: Nil
       }
-      case infixExpr: ScInfixExpr if infixExpr.operation.refName == "&&" =>
+        //TODO: probably replace
+      case infixExpr: ScInfixExpr if infixExpr.operation.refName.inName == "&&" =>
         separateConditions(infixExpr.lOp) ::: separateConditions(infixExpr.rOp) ::: Nil
       case _ => expr :: Nil
     }

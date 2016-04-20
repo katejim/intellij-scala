@@ -131,7 +131,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
           val generateAnonClass = DebuggerUtil.generatesAnonClass(templ)
           val method = ref.resolve() match {
             case m: PsiMethod if !generateAnonClass => m
-            case _ => new FakeAnonymousClassConstructor(templ, ref.refName)
+              //TODO: probably replace
+            case _ => new FakeAnonymousClassConstructor(templ, ref.refName.inName)
           }
           result += new MethodSmartStepTarget(method, "new ", constr, /*needBreakpointRequest = */ generateAnonClass, noStopAtLines)
         }
@@ -177,8 +178,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
           return //stop at function expression
         case ref: ScReferenceExpression =>
           ref.resolve() match {
-            case fun: ScFunctionDefinition if fun.name == "apply" && ref.refName != "apply" =>
-              val prefix = s"${ref.refName}."
+            case fun: ScFunctionDefinition if fun.name == "apply" && ref.refName.inName != "apply" => //TODO: probably replace
+              val prefix = s"${ref.refName.inName}."  //TODO: probably replace
               result += new MethodSmartStepTarget(fun, prefix, ref.nameId, false, noStopAtLines)
             case Both(f: ScFunctionDefinition, ContainingClass(cl: ScClass)) if cl.getModifierList.hasModifierProperty("implicit") =>
               val isActuallyImplicit = ref.qualifier.exists(_.getImplicitConversions()._2.nonEmpty)
@@ -203,7 +204,7 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
       }
       ref match {
         case Some(r @ ResolvesTo(f: ScFunctionDefinition)) =>
-          val prefix = s"${r.refName}."
+          val prefix = s"${r.refName.inName}." //TODO: probably replace
           result += new MethodSmartStepTarget(f, prefix, r.nameId, false, noStopAtLines)
         case _ =>
       }

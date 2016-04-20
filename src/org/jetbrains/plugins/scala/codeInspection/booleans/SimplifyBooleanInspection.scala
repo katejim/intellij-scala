@@ -53,9 +53,11 @@ object SimplifyBooleanUtil {
       case expression: ScExpression =>
         val children = getScExprChildren(expr)
         val isBooleanOperation = expression match {
-          case ScPrefixExpr(operation, operand) => operation.refName == "!" && isOfBooleanType(operand)
+            //TODO: probably replace
+          case ScPrefixExpr(operation, operand) => operation.refName.inName == "!" && isOfBooleanType(operand)
           case ScInfixExpr(left, oper, right) =>
-            boolInfixOperations.contains(oper.refName) &&
+            //TODO: probably replace
+            boolInfixOperations.contains(oper.refName.inName) &&
                     isOfBooleanType(left) && isOfBooleanType(right)
           case _ => false
         }
@@ -95,7 +97,8 @@ object SimplifyBooleanUtil {
       val copy = parenthesized.copy.asInstanceOf[ScParenthesisedExpr]
       copy.replaceExpression(copy.expr.getOrElse(copy), removeParenthesis = true)
     case ScPrefixExpr(operation, operand) =>
-      if (operation.refName != "!") expr
+      //TODO: probably replace
+      if (operation.refName.inName != "!") expr
       else {
         booleanConst(operand) match {
           case Some(bool: Boolean) =>
@@ -105,12 +108,15 @@ object SimplifyBooleanUtil {
       }
     case ScInfixExpr(leftExpr, operation, rightExpr) =>
       val operName = operation.refName
-      if (!boolInfixOperations.contains(operName)) expr
+      //TODO: probably replace
+      if (!boolInfixOperations.contains(operName.inName)) expr
       else {
         booleanConst(leftExpr) match {
-          case Some(bool: Boolean) => simplifyInfixWithLiteral(bool, operName, rightExpr)
+            //TODO: probably replace
+          case Some(bool: Boolean) => simplifyInfixWithLiteral(bool, operName.inName, rightExpr)
           case None => booleanConst(rightExpr) match {
-            case Some(bool: Boolean) => simplifyInfixWithLiteral(bool, operName, leftExpr)
+              //TODO: probably replace
+            case Some(bool: Boolean) => simplifyInfixWithLiteral(bool, operName.inName, leftExpr)
             case None => expr
           }
         }

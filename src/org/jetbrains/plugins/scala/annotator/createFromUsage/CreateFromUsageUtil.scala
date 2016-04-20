@@ -34,7 +34,7 @@ object CreateFromUsageUtil {
   def nameByType(tp: ScType) = NameSuggester.suggestNamesByType(tp).headOption.getOrElse("value")
   
   def nameAndTypeForArg(arg: PsiElement): (String, ScType) = arg match {
-    case ref: ScReferenceExpression => (ref.refName, ref.getType().getOrAny)
+    case ref: ScReferenceExpression => (ref.refName.inName, ref.getType().getOrAny)
     case expr: ScExpression =>
       val tp = expr.getType().getOrAny
       (nameByType(tp), tp)

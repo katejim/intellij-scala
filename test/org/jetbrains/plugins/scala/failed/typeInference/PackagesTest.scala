@@ -35,7 +35,7 @@ class PackagesTest extends ScalaFixtureTestCase {
 
     val visitor = new ScalaRecursiveElementVisitor {
       override def visitReferenceExpression(ref: ScReferenceExpression): Unit = {
-        assert(ref.resolve() != null, s"Can't resolve reference ${ref.refName}")
+        assert(ref.resolve() != null, s"Can't resolve reference ${ref.refName.inName}")  //TODO: probably replace
       }
     }
     fileToCheck.accept(visitor)
@@ -78,7 +78,7 @@ class PackagesTest extends ScalaFixtureTestCase {
 
     val visitor = new ScalaRecursiveElementVisitor {
       override def visitReferenceExpression(ref: ScReferenceExpression): Unit = {
-        if (ref.refName == "CaseClassWithOverloads") {
+        if (ref.refName.inName == "CaseClassWithOverloads") { //TODO: probably replace
           assert(ref.bind().nonEmpty && ref.bind().get.isApplicable(), "Resolve is not applicable")
         }
         super.visitReferenceExpression(ref)

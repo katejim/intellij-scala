@@ -140,8 +140,10 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
       (lines(0).endsWith("(") && lines(2).trim.startsWith(")") || lines(0).endsWith("{") && lines(2).trim.startsWith("}"))) {
         val trimmedStartLine = getLineByNumber(document.getLineNumber(offset) - 1).trim()
         val inConcatenation = literal.getParent match {
-          case ScInfixExpr(lit: ScLiteral, op, `literal`) if op.refName == "+" && lit.isString => Option(lit)
-          case ScInfixExpr(expr, op, `literal`) if op.refName == "+" && StringConcatenationParser.isString(expr) => Option(expr)
+            //TODO: probably replace
+          case ScInfixExpr(lit: ScLiteral, op, `literal`) if op.refName.inName == "+" && lit.isString => Option(lit)
+            //TODO: probably replace
+          case ScInfixExpr(expr, op, `literal`) if op.refName.inName == "+" && StringConcatenationParser.isString(expr) => Option(expr)
           case _ => None
         }
         val needInsertNLBefore = (!trimmedStartLine.startsWith(firstMLQuote) || inConcatenation.isDefined) && quotesOnNewLine

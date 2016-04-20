@@ -231,8 +231,9 @@ object NameSuggester {
     expr match {
       case _: ScThisReference => add("thisInstance")
       case _: ScSuperReference => add("superInstance")
-      case x: ScReferenceElement if x.refName != null =>
-        val name = x.refName
+        //TODO: probably replace
+      case x: ScReferenceElement if x.refName.inName != null =>
+        val name = x.refName.inName //TODO: probably replace
         if (name != null && name.toUpperCase == name) {
           add(name.toLowerCase)
         } else {

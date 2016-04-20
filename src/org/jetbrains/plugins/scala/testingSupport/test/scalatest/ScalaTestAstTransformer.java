@@ -112,14 +112,14 @@ public class ScalaTestAstTransformer {
     @Nullable
     protected String getNameFromAnnotAssign(@NotNull ScAssignStmt assignStmt) {
         if (assignStmt.getLExpression() instanceof ScReferenceExpression &&
-                ((ScReferenceExpression) assignStmt.getLExpression()).refName().equals("value")) {
+                ((ScReferenceExpression) assignStmt.getLExpression()).refName().inName().equals("value")) { // TODO: probably replace
             ScExpression expr = assignStmt.getRExpression().get();
             if (expr != null) {
                 if (expr instanceof ScMethodCall) {
                     ScMethodCall methodCall = (ScMethodCall) expr;
                     ScExpression invokedExpr = methodCall.getInvokedExpr();
                     if (invokedExpr instanceof ScReferenceExpression &&
-                            ((ScReferenceExpression)invokedExpr).refName().equals("Array")) {
+                            ((ScReferenceExpression)invokedExpr).refName().inName().equals("Array")) { // TODO: probably replace
                         ScArgumentExprList constructorArgs = methodCall.args();
                         ScExpression[] argExprs = constructorArgs.exprsArray();
                         if (constructorArgs.invocationCount() == 1 && argExprs.length == 1) {
@@ -484,7 +484,7 @@ public class ScalaTestAstTransformer {
                 }
 
             }
-            String pName = (current.isApplyOrUpdateCall()) ? "apply" : ref.refName();
+            String pName = (current.isApplyOrUpdateCall()) ? "apply" : ref.refName().inName(); // TODO probably related
             PsiElement nameSource = (current.isApplyOrUpdateCall()) ? null : ref;
             AstNode[] array = new AstNode[args.size()];
             args.toArray(array);

@@ -94,7 +94,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
   private def bindReference(caseClause: ScCaseClause, bindTo: PsiNamedElement) {
     val pattern: ScPattern = caseClause.pattern.get
     val ref = pattern.depthFirst.collectFirst {
-      case x: ScReferenceElement if x.refName == bindTo.name => x
+      case x: ScReferenceElement if x.refName.inName == bindTo.name => x //TODO: probably replace
     }
     ref.foreach(_.bindToElement(bindTo))
   }

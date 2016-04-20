@@ -73,7 +73,7 @@ class MatchToPartialFunctionInspection extends AbstractInspection(inspectionId){
     }
     if (call == null || !call.argumentExpressions.contains(arg)) return true
     val (refText, oldResolve) = call match {
-      case ScInfixExpr(qual, r, _) => (s"${qual.getText}.${r.refName}", r.resolve())
+      case ScInfixExpr(qual, r, _) => (s"${qual.getText}.${r.refName.inName}", r.resolve()) //TODO: probably replace
       case ScMethodCall(r: ScReferenceExpression, _) => (r.getText, r.resolve())
       case _ => return true
     }

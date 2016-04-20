@@ -612,7 +612,7 @@ class ScalaAnnotator extends Annotator with FunctionAnnotator with ScopeAnnotato
       //todo remove when resolve of unqualified expression will be fully implemented
       if (refElement.getManager.isInProject(refElement) && resolve.length == 0 &&
               (fixes.nonEmpty || countError)) {
-        val error = ScalaBundle.message("cannot.resolve", refElement.refName)
+        val error = ScalaBundle.message("cannot.resolve", refElement.refName.inName) //TODO: probably replace
         val annotation = holder.createErrorAnnotation(refElement.nameId, error)
         annotation.setHighlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
         registerAddImportFix(refElement, annotation, fixes: _*)
@@ -710,7 +710,7 @@ class ScalaAnnotator extends Annotator with FunctionAnnotator with ScopeAnnotato
         val refWithoutArgs = ScalaPsiElementFactory.createReferenceFromText(refElement.getText, parent.getContext, parent)
         if (refWithoutArgs != null && refWithoutArgs.multiResolve(false).exists(!_.getElement.isInstanceOf[PsiPackage])) {
           // We can't resolve the method call A(arg1, arg2), but we can resolve A. Highlight this differently.
-          val error = ScalaBundle.message(messageKey, refElement.refName)
+          val error = ScalaBundle.message(messageKey, refElement.refName.inName) //TODO: probably replace
           val annotation = holder.createErrorAnnotation(refElement.nameId, error)
           annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR)
           annotation.registerFix(ReportHighlightingErrorQuickFix)
@@ -735,7 +735,7 @@ class ScalaAnnotator extends Annotator with FunctionAnnotator with ScopeAnnotato
         case _ =>
       }
 
-      val error = ScalaBundle.message("cannot.resolve", refElement.refName)
+      val error = ScalaBundle.message("cannot.resolve", refElement.refName.inName) //TODO: probably replace
       val annotation = holder.createErrorAnnotation(refElement.nameId, error)
       annotation.setHighlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
       annotation.registerFix(ReportHighlightingErrorQuickFix)
@@ -800,7 +800,7 @@ class ScalaAnnotator extends Annotator with FunctionAnnotator with ScopeAnnotato
         case _: ScImportSelector | _: ScImportExpr if resolve.length > 0 => return
         case _ =>
       }
-      val error = ScalaBundle.message("cannot.resolve", refElement.refName)
+      val error = ScalaBundle.message("cannot.resolve", refElement.refName.inName) //TODO: probably replace
       val annotation = holder.createErrorAnnotation(refElement.nameId, error)
       annotation.setHighlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
       annotation.registerFix(ReportHighlightingErrorQuickFix)

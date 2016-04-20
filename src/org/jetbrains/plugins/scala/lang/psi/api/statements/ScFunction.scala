@@ -370,7 +370,7 @@ trait ScFunction extends ScalaPsiElement with ScMember with ScTypeParametersOwne
     annotations.exists(annot => {
       annot.typeElement match {
         case s: ScSimpleTypeElement => s.reference match {
-          case Some(ref) => ref.refName == "bridge"
+          case Some(ref) => ref.refName.inName == "bridge"
           case _ => false
         }
         case _ => false

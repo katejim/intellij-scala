@@ -228,7 +228,7 @@ trait ApplicationAnnotator {
     ref match {
       case (exp: ScReferenceExpression) childOf (_: ScMethodCall) =>
         annotation.registerFix(new CreateMethodQuickFix(exp))
-        if (ref.refName.headOption.exists(_.isUpper))
+        if (ref.refName.inName.headOption.exists(_.isUpper))
           annotation.registerFix(new CreateCaseClassQuickFix(exp))
       case (exp: ScReferenceExpression) childOf (infix: ScInfixExpr) if infix.operation == exp =>
         annotation.registerFix(new CreateMethodQuickFix(exp))
@@ -293,7 +293,7 @@ trait ApplicationAnnotator {
   private def parenthesise(items: Seq[_]) = items.mkString("(", ", ", ")")
 
   private def addCreateFromUsagesQuickFixes(ref: ScReferenceElement, holder: AnnotationHolder) = {
-    val annotation = holder.createErrorAnnotation(ref, ScalaBundle.message("cannot.resolve.such.signature", ref.refName))
+    val annotation = holder.createErrorAnnotation(ref, ScalaBundle.message("cannot.resolve.such.signature", ref.refName.inName)) //TODO: probably replace
     annotation.setHighlightType(ProblemHighlightType.INFORMATION)
     registerCreateFromUsageFixesFor(ref, annotation)
   }

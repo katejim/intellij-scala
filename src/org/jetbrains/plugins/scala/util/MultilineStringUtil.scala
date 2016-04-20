@@ -129,7 +129,8 @@ object MultilineStringUtil {
           }
         case call: ScMethodCall =>
           call.getEffectiveInvokedExpr match {
-            case ref: ScReferenceExpression if ref.refName == methodName => calls += call.args.exprsArray
+              //TODO: probably replace
+            case ref: ScReferenceExpression if ref.refName.inName == methodName => calls += call.args.exprsArray
             case _ =>
           }
         case exp: ScReferenceExpression =>
@@ -161,7 +162,7 @@ object MultilineStringUtil {
   def interpolatorPrefixLength(literal: ScLiteral) = interpolatorPrefix(literal).length
 
   def interpolatorPrefix(literal: ScLiteral) = literal match {
-    case isl: ScInterpolatedStringLiteral if isl.reference.isDefined => isl.reference.get.refName
+    case isl: ScInterpolatedStringLiteral if isl.reference.isDefined => isl.reference.get.refName.inName //TODO: probably replace
     case _ => ""
   }
 

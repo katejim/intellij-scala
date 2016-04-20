@@ -77,7 +77,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
   }
 
   def resolve(reference: ResolvableReferenceExpression, incomplete: Boolean): Array[ResolveResult] = {
-    val name = if(reference.isUnaryOperator) "unary_" + reference.refName else reference.refName
+    val name = if(reference.isUnaryOperator) "unary_" + reference.refName.inName else reference.refName.inName //TODO: probably replace
 
     if (name == ScImplicitlyConvertible.IMPLICIT_REFERENCE_NAME) {
       val data = reference.getUserData(ScImplicitlyConvertible.FAKE_RESOLVE_RESULT_KEY)
@@ -130,7 +130,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
         }
       }
       if (result.isEmpty && reference.isAssignmentOperator) {
-        val assignProcessor = new MethodResolveProcessor(reference, reference.refName.init, List(argumentsOf(reference)),
+        //TODO: probably replace
+        val assignProcessor = new MethodResolveProcessor(reference, reference.refName.inName.init, List(argumentsOf(reference)),
           Nil, prevInfoTypeParams, isShapeResolve = shapesOnly, enableTupling = true)
         result = reference.doResolve(reference, assignProcessor)
         result.map(r => r.asInstanceOf[ScalaResolveResult].copy(isAssignment = true): ResolveResult)

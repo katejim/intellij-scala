@@ -73,7 +73,8 @@ object ComparingUnrelatedTypesInspection {
 
 class ComparingUnrelatedTypesInspection extends AbstractInspection(inspectionId, inspectionName){
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
-    case MethodRepr(expr, Some(left), Some(oper), Seq(right)) if Seq("==", "!=", "ne", "eq", "equals") contains oper.refName =>
+    //TODO: probably replace
+    case MethodRepr(expr, Some(left), Some(oper), Seq(right)) if Seq("==", "!=", "ne", "eq", "equals") contains oper.refName.inName =>
       val needHighlighting = oper.resolve() match {
         case synth: ScSyntheticFunction => true
         case m: PsiMethod if MethodUtils.isEquals(m) => true

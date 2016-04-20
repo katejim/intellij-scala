@@ -35,7 +35,8 @@ class ScImportSelectorImpl private (stub: StubElement[ScImportSelector], nodeTyp
       return stub.asInstanceOf[ScImportSelectorStub].importedName
     }
     val id = findChildByType[PsiElement](TokenSets.ID_SET)
-    if (id == null) reference.refName else id.getText
+    //TODO: probably replace
+    if (id == null) reference.refName.inName else id.getText
   }
 
   def reference: ScStableCodeReferenceElement = {

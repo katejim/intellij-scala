@@ -134,7 +134,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
             else thisEval(iters)
         }
       case Some(ref) =>
-        val refName = ref.refName
+        val refName = ref.refName.inName //TODO: probably replace
         val (result, iters) = findContextClass {
           case null => true
           case cl: PsiClass if cl.name != null && cl.name == refName => true
@@ -566,7 +566,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
 
   def unresolvedMethodEvaluator(ref: ScReferenceExpression, args: Seq[ScExpression]): Evaluator = {
     val argEvals = args.map(evaluatorFor(_))
-    val name = NameTransformer.encode(ref.refName)
+    //TODO: probably replace
+    val name = NameTransformer.encode(ref.refName.inName)
     ref.qualifier match {
       case Some(q) => new ScalaMethodEvaluator(evaluatorFor(q), name, null, argEvals)
       case _ => new ScalaMethodEvaluator(thisOrImportedQualifierEvaluator(ref), name, null, argEvals)
@@ -806,7 +807,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         stableObjectEvaluator(qual)
       case _ =>
         //unresolved symbol => try to resolve it dynamically
-        val name = NameTransformer.encode(ref.refName)
+        //TODO: probably replace
+        val name = NameTransformer.encode(ref.refName.inName)
         val fieldOrVarEval = qualifier match {
           case Some(qual) => new ScalaFieldEvaluator(evaluatorFor(qual), name)
           case None => new ScalaLocalVariableEvaluator(name, fileName)
@@ -824,7 +826,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
 
     val isSynthetic = codeFragment.isAncestorOf(resolve)
     if (isSynthetic && ref.qualifier.isEmpty)
-      Some(syntheticVariableEvaluator(ref.refName))
+      //TODO: probably replace
+      Some(syntheticVariableEvaluator(ref.refName.inName))
     else None
   }
 
@@ -1195,16 +1198,19 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
   def infixExpressionEvaluator(infix: ScInfixExpr): Evaluator = {
     val operation = infix.operation
     def isUpdate(ref: ScReferenceExpression): Boolean = {
-      ref.refName.endsWith("=") &&
+      //TODO: probably replace
+      ref.refName.inName.endsWith("=") &&
         (ref.resolve() match {
-          case n: PsiNamedElement if n.name + "=" == ref.refName => true
+            //TODO: probably replace
+          case n: PsiNamedElement if n.name + "=" == ref.refName.inName => true
           case _ => false
         })
     }
 
     if (isUpdate(operation)) {
       val baseExprText = infix.getBaseExpr.getText
-      val operationText = operation.refName.dropRight(1)
+      //TODO: probably replace
+      val operationText = operation.refName.inName.dropRight(1)
       val argText = infix.getArgExpr.getText
       val exprText = s"$baseExprText = $baseExprText $operationText $argText"
       val expr = ScalaPsiElementFactory.createExpressionWithContextFromText(exprText, infix.getContext, infix)
@@ -1229,7 +1235,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
   }
 
   def prefixExprEvaluator(p: ScPrefixExpr): Evaluator = {
-    val newExprText = s"(${p.operand.getText}).unary_${p.operation.refName}"
+    val newExprText = s"(${p.operand.getText}).unary_${p.operation.refName.inName}"
     val newExpr = ScalaPsiElementFactory.createExpressionWithContextFromText(newExprText, p.getContext, p)
     evaluatorFor(newExpr)
   }

@@ -1721,7 +1721,7 @@ object ScalaPsiUtil {
   def isPossiblyAssignment(elem: PsiElement): Boolean = elem.getContext match {
     case assign: ScAssignStmt if assign.getLExpression == elem => true
     case infix: ScInfixExpr if infix.isAssignmentOperator => true
-    case ref1 @ ScReferenceExpression.withQualifier(`elem`) => ParserUtils.isAssignmentOperator(ref1.refName)
+    case ref1 @ ScReferenceExpression.withQualifier(`elem`) => ParserUtils.isAssignmentOperator(ref1.refName.inName) //TODO: probably replace
     case _ => false
   }
 
@@ -1731,7 +1731,8 @@ object ScalaPsiUtil {
       if (holder != null) {
         val importExprs: Seq[ScImportExpr] = holder.getImportStatements.flatMap(_.importExprs)
         importExprs.flatMap(_.selectors).filter(_.importedName != "_").foreach { s =>
-          if (s.reference.refName != s.importedName) result += ((s.reference, s.importedName))
+          //TODO: probably replace
+          if (s.reference.refName.inName != s.importedName) result += ((s.reference, s.importedName))
         }
         result.toSet
       }

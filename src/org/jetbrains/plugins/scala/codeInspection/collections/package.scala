@@ -107,7 +107,7 @@ package object collections {
 
   object scalaSome {
     def unapply(expr: ScExpression): Option[ScExpression] = expr match {
-      case MethodRepr(_, _, Some(ref), Seq(e)) if ref.refName == "Some" =>
+      case MethodRepr(_, _, Some(ref), Seq(e)) if ref.refName.inName == "Some" => //TODO: probably replace
         ref.resolve() match {
           case m: ScMember if m.containingClass.qualifiedName == "scala.Some" => Some(e)
           case _ => None
@@ -167,7 +167,8 @@ package object collections {
         case ScMethodCall(refExpr: ScReferenceExpression, Seq(underscore(), underscore()))  => Some(refExpr)
         case _ => None
       }
-      operRef.map(_.refName)
+      //TODO: probably replace
+      operRef.map(_.refName.inName)
     }
   }
 
@@ -176,7 +177,7 @@ package object collections {
       stripped(expr) match {
         case ScFunctionExpr(Seq(x), Some(result)) =>
           stripped(result) match {
-            case ScInfixExpr(left, oper, right) if oper.refName == operName =>
+            case ScInfixExpr(left, oper, right) if oper.refName.inName == operName => //TODO: probably replace
               (stripped(left), stripped(right)) match {
                 case (leftRef: ScReferenceExpression, rightExpr)
                   if leftRef.resolve() == x && isIndependentOf(rightExpr, x) =>
@@ -188,8 +189,8 @@ package object collections {
               }
             case _ => None
           }
-        case ScInfixExpr(underscore(), oper, right) if oper.refName == operName => Some(right)
-        case ScInfixExpr(left, oper, underscore()) if oper.refName == operName => Some(left)
+        case ScInfixExpr(underscore(), oper, right) if oper.refName.inName == operName => Some(right) //TODO: probably replace
+        case ScInfixExpr(left, oper, underscore()) if oper.refName.inName == operName => Some(left) //TODO: probably replace
         case _ => None
       }
     }
@@ -203,7 +204,7 @@ package object collections {
       stripped(expr) match {
         case ScFunctionExpr(Seq(x, y), Some(result)) =>
           stripped(result) match {
-            case ScInfixExpr(left, oper, right) if oper.refName == "&&" =>
+            case ScInfixExpr(left, oper, right) if oper.refName.inName == "&&" => //TODO: probably replace
               (stripped(left), stripped(right)) match {
                 case (leftRef: ScReferenceExpression, right: ScExpression)
                   if leftRef.resolve() == x && isIndependentOf(right, x) =>
@@ -214,7 +215,7 @@ package object collections {
               }
             case _ => None
           }
-        case ScInfixExpr(underscore(), oper, right) if oper.refName == "&&" => Some(right)
+        case ScInfixExpr(underscore(), oper, right) if oper.refName.inName == "&&" => Some(right) //TODO: probably replace
         case _ => None
       }
     }
@@ -225,10 +226,10 @@ package object collections {
       stripped(expr) match {
         case ScFunctionExpr(Seq(x), Some(result)) =>
           stripped(result) match {
-            case MethodRepr(_, Some(ResolvesTo(`x`)), Some(ref), Seq()) if ref.refName == name => true
+            case MethodRepr(_, Some(ResolvesTo(`x`)), Some(ref), Seq()) if ref.refName.inName == name => true //TODO: probably replace
             case _ => false
           }
-        case MethodRepr(_, Some(underscore()), Some(ref), Seq()) if ref.refName == name => true
+        case MethodRepr(_, Some(underscore()), Some(ref), Seq()) if ref.refName.inName == name => true //TODO: probably replace
         case _ => false
       }
     }
@@ -329,7 +330,8 @@ package object collections {
     val name = parameter.getName
     val visitor = new ScalaRecursiveElementVisitor() {
       override def visitReferenceExpression(ref: ScReferenceExpression) {
-        if (ref.refName == name && ref.resolve() == parameter) result = false
+        //TODO: probably replace
+        if (ref.refName.inName == name && ref.resolve() == parameter) result = false
         super.visitReferenceExpression(ref)
       }
     }
@@ -399,13 +401,14 @@ package object collections {
     private def computeExprsWithSideEffects(expr: ScExpression): Seq[ScExpression] = {
 
       def isSideEffectCollectionMethod(ref: ScReferenceExpression): Boolean = {
-        val refName = ref.refName
+        val refName = ref.refName.inName //TODO: probably replace
         (refName.endsWith("=") || refName.endsWith("=:") || sideEffectsCollectionMethods.contains(refName)) &&
                 checkResolve(ref, Array("scala.collection.mutable._", "scala.collection.Iterator"))
       }
 
       def isSetter(ref: ScReferenceExpression): Boolean = {
-        ref.refName.startsWith("set") || ref.refName.endsWith("_=")
+        //TODO: probably replace
+        ref.refName.inName.startsWith("set") || ref.refName.inName.endsWith("_=")
       }
 
       def hasUnitReturnType(ref: ScReferenceExpression)

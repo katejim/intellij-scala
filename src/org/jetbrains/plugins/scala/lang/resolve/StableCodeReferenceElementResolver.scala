@@ -22,19 +22,21 @@ class StableCodeReferenceElementResolver(reference: ResolvableStableCodeReferenc
         case List() => List(List())
         case x => x
       }
-      new ConstructorResolveProcessor(ref, ref.refName, effectiveArgs, typeArgs, kinds, shapeResolve, allConstructorResults)
+      //TODO: probably replace
+      new ConstructorResolveProcessor(ref, ref.refName.inName, effectiveArgs, typeArgs, kinds, shapeResolve, allConstructorResults)
     } else ref.getContext match {
       //last ref may import many elements with the same name
       case e: ScImportExpr if e.selectorSet.isEmpty && !e.singleWildcard =>
-        new CollectAllForImportProcessor(kinds, ref, reference.refName)
-      case e: ScImportExpr if e.singleWildcard => new ResolveProcessor(kinds, ref, reference.refName)
-      case _: ScImportSelector => new CollectAllForImportProcessor(kinds, ref, reference.refName)
+        //TODO: probably replace
+        new CollectAllForImportProcessor(kinds, ref, reference.refName.inName)
+      case e: ScImportExpr if e.singleWildcard => new ResolveProcessor(kinds, ref, reference.refName.inName) //TODO: probably replace
+      case _: ScImportSelector => new CollectAllForImportProcessor(kinds, ref, reference.refName.inName) //TODO: probably replace
       case constr: ScInterpolationPattern =>
-        new ExtractorResolveProcessor(ref, reference.refName, kinds, constr.expectedType)
+        new ExtractorResolveProcessor(ref, reference.refName.inName, kinds, constr.expectedType) //TODO: probably replace
       case constr: ScConstructorPattern =>
-        new ExtractorResolveProcessor(ref, reference.refName, kinds, constr.expectedType)
-      case infix: ScInfixPattern => new ExtractorResolveProcessor(ref, reference.refName, kinds, infix.expectedType)
-      case _ => new ResolveProcessor(kinds, ref, reference.refName)
+        new ExtractorResolveProcessor(ref, reference.refName.inName, kinds, constr.expectedType) //TODO: probably replace
+      case infix: ScInfixPattern => new ExtractorResolveProcessor(ref, reference.refName.inName, kinds, infix.expectedType) //TODO: probably replace
+      case _ => new ResolveProcessor(kinds, ref, reference.refName.inName) //TODO: probably replace
     }
 
     reference.doResolve(ref, proc)

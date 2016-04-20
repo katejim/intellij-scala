@@ -14,8 +14,8 @@ trait ScStableCodeReferenceElement extends ScReferenceElement with ScPathElement
 
   def qualName: String = {
     qualifier match {
-      case Some(x) => x.qualName + "." + refName
-      case _ => refName
+      case Some(x) => x.qualName + "." + refName.inName //TODO: probably replace
+      case _ => refName.inName //TODO: probably replace
     }
   }
 

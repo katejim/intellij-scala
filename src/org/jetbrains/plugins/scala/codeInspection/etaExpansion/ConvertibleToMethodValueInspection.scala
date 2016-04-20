@@ -82,7 +82,8 @@ class ConvertibleToMethodValueInspection extends AbstractInspection(inspectionId
 
   private def methodWithoutArgumentsText(expr: ScExpression): Seq[String] = expr match {
     case call: ScMethodCall => Seq(call.getEffectiveInvokedExpr.getText)
-    case ScInfixExpr(_, oper, right) if !ScalaNamesUtil.isOperatorName(oper.refName) =>
+      //TODO: probably replace
+    case ScInfixExpr(_, oper, right) if !ScalaNamesUtil.isOperatorName(oper.refName.inName) =>
       val infixCopy = expr.copy.asInstanceOf[ScInfixExpr]
       infixCopy.getNode.removeChild(infixCopy.rOp.getNode)
       Seq(infixCopy.getText)

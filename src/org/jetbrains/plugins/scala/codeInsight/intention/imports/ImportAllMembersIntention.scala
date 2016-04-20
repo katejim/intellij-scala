@@ -24,7 +24,7 @@ class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
   override def isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean = {
     val qualAtCaret = PsiTreeUtil.getParentOfType(element, classOf[ScReferenceElement])
     if (qualAtCaret == null) return false
-    setText(s"Import all members of ${qualAtCaret.refName}")
+    setText(s"Import all members of ${qualAtCaret.refName.inName}") //TODO: probably replace
     checkQualifier(qualAtCaret)
   }
 
@@ -39,7 +39,8 @@ class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
         importHolder.addImportForPath(pathWithWildcard)
         sorted(usages, isQualifier = true).foreach {
           case isQualifierFor(ref @ resolve(resolved: PsiNamedElement)) if !isInImport(ref) =>
-            replaceAndBind(ref, ref.refName, resolved)
+            //TODO: probably replace
+            replaceAndBind(ref, ref.refName.inName, resolved)
           case _ =>
         }
       case _ =>

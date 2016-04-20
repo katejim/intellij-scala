@@ -67,7 +67,8 @@ class ScSelfTypeElementImpl private (stub: StubElement[ScSelfTypeElement], nodeT
     def fillNames(typeElement: ScTypeElement) {
       typeElement match {
         case s: ScSimpleTypeElement => s.reference match {
-          case Some(ref) => names += ref.refName
+            //TODO: probably replace
+          case Some(ref) => names += ref.refName.inName
           case _ =>
         }
         case p: ScParameterizedTypeElement => fillNames(p.typeElement)

@@ -366,7 +366,8 @@ private[expr] object ExpectedTypes {
             val lE = assign.getLExpression
             lE match {
               case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
-                params.find(parameter => ScalaPsiUtil.memberNamesEquals(parameter.name, ref.refName)) match {
+                //TODO: probably replace
+                params.find(parameter => ScalaPsiUtil.memberNamesEquals(parameter.name, ref.refName.inName)) match {
                   case Some(param) => res += ((param.paramType, param.paramInCode.flatMap(_.typeElement)))
                   case _ => res += p
                 }
